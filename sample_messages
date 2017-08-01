@@ -1,0 +1,32 @@
+manifold-state-subscriber
+73828011868960
+
+{"manifold_sn":1,"stations":[{"station_num":0,"valve_sn":2,"sku":"NX-DCV-SM-BLU-2-V0-L0-S0-00","cc":8,"ccl":406351062,"pp":125.0,"p_fault":"H","leak":"N","input":"B","update_time":1501615838081},{"station_num":4,"valve_sn":0,"sku":"NX-DCV-SM-BLU-2-V0-L0-S0-00","cc":5,"ccl":894379810,"pp":130.0,"p_fault":"L","leak":"N","input":"B","update_time":1501615839083}]}
+
+{
+	"manifold_sn": 1,
+	"stations": [{
+		"station_num": 0,
+		"valve_sn": 2,
+		"sku": "NX-DCV-SM-BLU-2-V0-L0-S0-00",
+		"cc": 8,
+		"ccl": 406351062,
+		"pp": 125.0,
+		"p_fault": "H",
+		"leak": "N",
+		"input": "B",
+		"update_time": 1501615838081
+	}, {
+		"station_num": 4,
+		"valve_sn": 0,
+		"sku": "NX-DCV-SM-BLU-2-V0-L0-S0-00",
+		"cc": 5,
+		"ccl": 894379810,
+		"pp": 130.0,
+		"p_fault": "L",
+		"leak": "N",
+		"input": "B",
+		"update_time": 1501615839083
+	}]
+}
+

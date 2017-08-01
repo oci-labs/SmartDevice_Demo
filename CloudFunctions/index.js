@@ -7,7 +7,7 @@
  * @param {string} event.data.data The "data" property of the Cloud Pub/Sub Message.
  * @param {function} The callback function.
  */
-exports.subscribe = function manifold-state-subscriber (event, callback) {
+exports.subscribe = function subscribe (event, callback) {
   const pubsubMessage = event.data;
 
   // We're just going to log the message to prove that it worked!

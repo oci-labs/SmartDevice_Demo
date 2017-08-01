@@ -1,0 +1,19 @@
+@channel Hi Team, here are some details on the google cloud side which can be useful pointers while integration: 
+
+GOOGLE PROJECT
+*nexmatixmvd* : GCP projectId
+*nexmatix-staging-bucket* : Bucket to stage all the deployments of cloud functions
+
+GOOGLE PUBSUB
+*manifold-state* : Topic for publishing manifold state information
+*manifold-configuration* : Topic for publishing manifold configuration information
+
+GOOGLE CLOUD FUNCTIONS 
+*manifold-state-subscriber* : Function for listening to messages published to 'manifold-state' topic
+*manifold-configuration-subscriber* : Function for listening to messages published to 'manifold-configuration' topic
+
+GOOGLE DATASTORE
+*Manifold* : Entity for storing manifold attributes
+*Station* : Entity for storing station attributes
+*Valve* : Entity for storing valve attributes
+*ValveStatus* : Entity for storing valve status
