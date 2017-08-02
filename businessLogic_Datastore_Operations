@@ -27,7 +27,7 @@ After receiving the following message payload from the pub-sub topic, it needs t
 	}]
 }
 
-FOR EACH MESSAGE THE FOLLOWING STEPS ARE PERFORMED:
+FOR EACH MESSAGE THE FOLLOWING INSERT/UPDATE STEPS ARE PERFORMED:
 
 step-1: Insert Manifold object if not found, else update the timestamp (inserts 1 object or no object)
 
