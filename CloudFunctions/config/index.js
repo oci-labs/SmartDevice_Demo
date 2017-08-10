@@ -1,3 +1,12 @@
+/*
+*
+*
+*Cloud function for subscribing to manifold-configuration topic
+*
+*
+*/
+
+
 // Specifying datastore requirement in GCP project
 const Datastore = require('@google-cloud/datastore');
 
@@ -22,52 +31,73 @@ exports.subscribe = function subscribe (event, callback) {
   
   console.log(message);
   
-  var message_object = JSON.parse(message);
+  var jsonData = JSON.parse(message);
   
   
-  if (!message_object) {
-    throw new Error('message is empty!');
+  if (!jsonData) {
+    throw new Error('message-payload is empty!');
   }
-  //parsing the message for updating/creating the Manifold kind entity
-  createEntity_ManifoldKind(message_object);
+  //parsing the message for updating/creating the 'Valve' kind entity
+  createEntity(jsonData);
 
   // Don't forget to call the callback!
   callback();
 };
 // [END functions_pubsub_subscribe]
 
-// [START createEntity_ManifoldKind]
-function createEntity_ManifoldKind (message_object) {
-  var manifold_key = message_object.manifold_sn;
-  var kind = "Manifold";
-  var request_for_key = JSON.parse("{\"kind\":\"".concat(kind).concat("\", \"key\":\"").concat(manifold_key).concat("\"}"));
-  //var request = '{"kind":"Task","key":"sampletask1"}';
-   
-  console.log(manifold_key);
-  console.log(request_for_key);
-   
-  const key = getKeyFromRequestData(request_for_key);
+// [START createEntity]
+function createEntity (jsonData) {
+  var manifold_key = jsonData.manifold_sn;
   
-  var entity = {
-    key: key,
-	data: [
-      {
-        name: 'last_updated',
-        value: new Date().toJSON()
-      }
-    ]
-  };
+  for(var i = 0; i < jsonData.stations.length; i++){
 
-  //function to add entities
-  addEntity(entity);
-}
-//[END createEntity_ManifoldKind]
+      console.log("Config: iteration-"+i);
+
+	  var station = jsonData.stations[i];
+	  
+	  var kind = "Valve";
+	  var entityKey = station.valve_sn;
+	  var request_for_key = JSON.parse("{\"kind\":\"".concat(kind).concat("\", \"key\":\"").concat(entityKey).concat("\"}"));
+	  const key = getKeyFromRequestData(request_for_key);
+
+	  var entity = {
+		key: key,
+		data: [
+			{
+				name: 'station_num',
+				value: station.station_num
+			},
+			{
+				name: 'update_time',
+				value: station.update_time
+			},
+			{
+				name: 'sku',
+				value: station.sku
+			},
+			{
+				name: 'fab_date',
+				value: station.fab_date
+			},
+			{
+				name: 'ship_date',
+				value: station.ship_date
+			}
+		]
+		};
+
+		//function to add entities
+		addEntity(entity);
+	}
+  }
+  
+//[END createEntity]
 
 // [START addEntity]
 function addEntity (entity) {
   datastore.save(entity)
     .then(() => {
-      console.log(`Task ${key.id} created successfully.`);
+      console.log(`an Entity ${entity.key.id} created successfully.`);
     })
     .catch((err) => {
       console.error('ERROR:', err);
@@ -128,3 +158,8 @@ exports.set = function set (req, res) {
       return Promise.reject(err);
     });
 };
+
+/*
+gcloud beta functions deploy manifold-configuration-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
+
+*/

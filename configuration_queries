@@ -3,5 +3,8 @@ Queries:
 #Query to deploy the subscribe function for manifold-state
 gcloud alpha functions deploy subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
 
-#Query to deploy custom_function-name for the subscribe function for manifold-state
+#Query to deploy manifold-state-subscriber for the subscribe function for manifold-state topic
 gcloud beta functions deploy manifold-state-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
+
+#Query to deply manifold-configuration-subscriber for the subscribe function for manifold-configuration topic
+gcloud beta functions deploy manifold-configuration-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
