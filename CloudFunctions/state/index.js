@@ -6,6 +6,7 @@
  *
  */
 
+var projectid = process.env.GCLOUD_PROJECT;
 var mysql = require('mysql');
 
 // [START functions_pubsub_subscribe]
@@ -47,7 +48,7 @@ function createEntity(jsonData){
     console.log("station_count:"+jsonData.stations.length);
 
     var connection = mysql.createConnection({
-        socketPath: '/cloudsql/nexmatixmvp:us-central1:nexmatixmvd',
+        socketPath: '/cloudsql/' + projectid + ':us-central1:nexmatixmvd',
         user: 'cfuser',
         database: 'smartdevice_repo'
     });
