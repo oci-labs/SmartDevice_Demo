@@ -1,0 +1,44 @@
+PUT manifold_state
+{
+  "mappings" : {
+    "state" : {
+      "properties" : {
+        "value_sn" : {
+          "type": "long"
+        },
+        "manifold_sn" : {
+          "type": "long"
+        },
+        "station_num" : {
+          "type": "long"
+        },
+        "cycle_count" : {
+          "type": "long"
+        },
+        "cycle_count_limit" : {
+          "type": "long"
+        },
+        "update_ts" : {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        },
+        "input" : {
+          "type": "text"
+        },
+        "pressure_point" : {
+          "type": "text"
+        },
+        "pressure_fault" : {
+          "type": "double"
+        },
+        "leak" : {
+          "type": "text"
+        },
+        "event_ts" : {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}

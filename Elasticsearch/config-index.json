@@ -1,0 +1,34 @@
+PUT valve_config
+{
+  "mappings" : {
+    "valve" : {
+      "properties" : {
+        "fab_date" : {
+          "type": "date"
+        },
+        "ship_date" : {
+          "type": "date"
+        },
+        "sku" : {
+          "type": "text"
+        },
+        "station_num" : {
+          "type": "long"
+        },
+        "valve_sn" : {
+          "type": "long"
+        },
+        "manifold_sn" : {
+          "type": "long"
+        },
+        "cycle_count_limit" : {
+          "type": "long"
+        },
+        "event_ts" : {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}

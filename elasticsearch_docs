@@ -1,0 +1,26 @@
+Elasticsearch:
+
+Bitnami Elasticsearch installed for nexmatixmvp-dev instance (presently v5.5.1-0).
+
+Server info:  35.193.249.208
+Region:  US-CENTRAL1-B
+
+Username:  user
+Password:
+
+SSH Console via .pem file (should I add to repo?)
+
+Elasticsearch instance name:  Bitnami-elasticsearch-dm-4538
+
+Mappings:
+
+- Mappings are what are used to create distinct indexes that can be used to create new documents and subsequently be searched against.
+-- State (manifold status)
+-- Config (valve configuration / details)
+-- Alert (valve alerts)
+
+Mapping files are located under the /Elasticsearch directory.  Defaulted to index all fields for this first pass.  This was done
+by first ssh into the Elasticsearch instance, then using the Sense Chrome extension.
+
+Of note, these cannot be updated, so new named indexes will need to be created (will investigate versioning, which apparently
+went away with the release of Elasticsearch 5.x, as did automatic timestamps).

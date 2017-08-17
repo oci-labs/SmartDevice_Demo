@@ -1,0 +1,29 @@
+PUT valve_alert
+{
+  "mappings" : {
+    "alert" : {
+      "properties" : {
+        "alert_type" : {
+          "type": "keyword"
+        },
+        "detection_time" : {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        },
+        "value_sn" : {
+          "type": "long"
+        },
+        "manifold_sn" : {
+          "type": "long"
+        },
+        "station_num" : {
+          "type": "long"
+        },
+        "event_ts" : {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}
