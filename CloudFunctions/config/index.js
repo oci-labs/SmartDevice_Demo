@@ -56,15 +56,14 @@ function createEntity (jsonData) {
 	var station = jsonData.stations[i];
 
 	var entity = {
-            manifold_sn: jsonData.manifold_sn,
-            timestamp: new Date(jsonData.timestamp),
-
-            fab_date: station.fab_date,
-	    ship_date: station.ship_date,
-	    sku: station.sku,
-	    station_num: station.station_num,
-            valve_sn: station.valve_sn,
-            ccl: station.ccl
+    manifold_sn: jsonData.manifold_sn,
+    timestamp: new Date(jsonData.timestamp),
+    fab_date: new Date(station.fab_date),
+	  ship_date: new Date(station.ship_date),
+	  sku: station.sku,
+	  station_num: station.station_num,
+    valve_sn: station.valve_sn,
+    ccl: station.ccl
 	};
 
         connection.query('INSERT INTO valve SET ? on duplicate key update ?', [entity, entity], function(error, results, fields) {
