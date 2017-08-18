@@ -8,7 +8,7 @@ PUT valve_alert
         },
         "detection_time" : {
           "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         },
         "value_sn" : {
           "type": "long"
@@ -21,7 +21,7 @@ PUT valve_alert
         },
         "event_ts" : {
           "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         }
       }
     }

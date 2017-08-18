@@ -3,7 +3,7 @@ PUT manifold_state
   "mappings" : {
     "state" : {
       "properties" : {
-        "value_sn" : {
+        "valve_sn" : {
           "type": "long"
         },
         "manifold_sn" : {
@@ -20,23 +20,23 @@ PUT manifold_state
         },
         "update_ts" : {
           "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         },
         "input" : {
           "type": "text"
         },
         "pressure_point" : {
-          "type": "text"
+          "type": "double"
         },
         "pressure_fault" : {
-          "type": "double"
+          "type": "text"
         },
         "leak" : {
           "type": "text"
         },
         "event_ts" : {
           "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         }
       }
     }
