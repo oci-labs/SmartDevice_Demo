@@ -42,7 +42,7 @@ exports.subscribe = function subscribe (event, callback) {
 
 // [START createMessage]
 function createMessage (jsonData) {
-    const elasticSearchHost = 'http://35.193.249.208/elasticsearch';
+    const elasticSearchHost = 'http://35.202.211.96/elasticsearch';
     const configUri = '/valve_config/valve';
     const elasticSearchMethod = 'POST';
 
@@ -68,7 +68,7 @@ function createMessage (jsonData) {
             uri: elasticSearchHost + configUri,
             auth: {
                 username: "user",
-                password: "O2Xzg7yk"
+                password: "VQY4sxqG"
             },
             body: entity,
             json: true
@@ -84,6 +84,6 @@ function createMessage (jsonData) {
 //[END createMessage]
 
 /*
-  gcloud beta functions deploy elasticsearch-manifold-configuration-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
+  gcloud beta functions deploy elasticsearch-manifold-configuration-subscriber2 --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
 
 */

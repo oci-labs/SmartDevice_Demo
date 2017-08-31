@@ -42,10 +42,10 @@ exports.subscribe = function subscribe (event, callback) {
 
 // [START createMessage]
 function createMessage(jsonData) {
-    const elasticSearchHost = 'http://35.193.249.208/elasticsearch';
+    const elasticSearchHost = 'http://35.202.211.96/elasticsearch';
     const stateUri = '/manifold_state/state';
     const elasticSearchMethod = 'POST';
-    console.log("State: Entered createEntity...");
+    console.log("State: Entered createMessage...");
     var manifold_sn = jsonData.manifold_sn;
     var timestamp = new Date(jsonData.timestamp);
     console.log("Timestamp ", timestamp);
@@ -83,7 +83,7 @@ function createMessage(jsonData) {
             uri: elasticSearchHost + stateUri,
             auth: {
                 username: "user",
-                password: "O2Xzg7yk"
+                password: "VQY4sxqG"
             },
             body: entity,
             json: true
@@ -101,6 +101,6 @@ function createMessage(jsonData) {
 
 /*
 
- gcloud beta functions deploy elasticsearch-manifold-state-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
+ gcloud beta functions deploy elasticsearch-manifold-state-subscriber2 --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
 
  */
