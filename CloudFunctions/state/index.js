@@ -6,6 +6,8 @@
  *
  */
 
+const request = require('request-promise');
+
 var projectid = process.env.GCLOUD_PROJECT;
 var mysql = require('mysql');
 
@@ -43,9 +45,15 @@ exports.subscribe = function subscribe (event, callback) {
 function createEntity(jsonData){
     console.log("State: Entered createEntity...");
     var manifold_sn = jsonData.manifold_sn;
-    var timestamp = new Date(jsonData.timestamp)
+    var timestamp = new Date();
 
-    console.log("station_count:"+jsonData.stations.length);
+    const pressureFault = "pressure";
+    const cycleCountFault = "cycle count";
+    const leakFault = "leak";
+
+    const alertQuery = "SELECT alert_type FROM valve_alert WHERE valve_sn = ?";
+
+    console.log("stations_count:"+jsonData.stations.length);
 
     var connection = mysql.createConnection({
         socketPath: '/cloudsql/' + projectid + ':us-central1:nexmatixmvd',
@@ -57,38 +65,116 @@ function createEntity(jsonData){
 
     var station_index;
     for(station_index in jsonData.stations){
+        console.log("The station index is: ", station_index);
+
+        var previousPressureFaultCount = 0;
+        var previousCycleCountFaultCount = 0;
+        var previousLeakFaultCount = 0;
+
+        var currentPressureFaultCount = 0;
+        var currentCycleCountFaultCount = 0;
+        var currentLeakFaultCount = 0;
+
         station = jsonData.stations[station_index];
         const station_num = station.station_num;
         const valve_sn = station.valve_sn;
+        if(valve_sn !== null && valve_sn !== undefined) {
 
-        console.log("state: station_index:"+station_index);
-        console.log("State: station-"+JSON.stringify(station));
-        console.log("State: station_num-"+station_num);
-        console.log("State: valve_sn-"+valve_sn);
+            const default_ccl = 20000000;
 
-        var entity = {
-            valve_sn: station.valve_sn,
-            manifold_sn: manifold_sn,
-            station_num: station.station_num,
-            cc: station.cc,
-            ccl: station.ccl,
-            timestamp: timestamp,
-            input: station.input,
-            pp: station.pp,
-            p_fault: station.p_fault,
-            leak: station.leak
-        };
-        console.log("State: Creating ValveStatusEntity..." + JSON.stringify(entity));
+            console.log("state: station_index:" + station_index);
+            console.log("State: station-" + JSON.stringify(station));
+            console.log("State: station_num-" + station_num);
+            console.log("State: valve_sn-" + valve_sn);
 
-        connection.query('INSERT INTO valve_status SET ? on duplicate key update ?', [entity, entity], function(error, results, fields) {
-            if (error) console.log(error);
-            else console.log("inserted successfully");
-        });
+            connection.query(alertQuery, [valve_sn], function (error, results) {
+                if (error) console.log(error);
+                else {
+                    console.log("Total results are: ", results);
+                    for (var i in results) {
+                        var alert_type = results[i].alert_type;
+                        console.log("The alert_type is: " + alert_type);
+                        if (alert_type === pressureFault) {
+                            previousPressureFaultCount = previousPressureFaultCount + 1;
+                        } else if (alert_type === leakFault) {
+                            previousLeakFaultCount = previousLeakFaultCount + 1;
+                        } else if (alert_type === cycleCountFault) {
+                            previousCycleCountFaultCount = previousCycleCountFaultCount + 1;
+                        }
+                    }
+                }
+                console.log("Previous pressure fault count: ", previousPressureFaultCount);
+                console.log("Previous leak fault count: ", previousLeakFaultCount);
+                console.log("Previous cycle count fault count: ", previousCycleCountFaultCount);
+            });
+
+            var entity = {
+                valve_sn: station.valve_sn,
+                manifold_sn: manifold_sn,
+                station_num: station.station_num,
+                cc: station.cc,
+                ccl: station.ccl !== null ? station.ccl : default_ccl,
+                timestamp: timestamp,
+                input: station.input,
+                pp: station.pp,
+                p_fault: station.p_fault,
+                leak: station.leak
+            };
+            console.log("State: Creating ValveStatusEntity..." + JSON.stringify(entity));
+
+            connection.query('INSERT INTO valve_status SET ? on duplicate key update ?', [entity, entity], function (error, results, fields) {
+                if (error) console.log(error);
+                else console.log("inserted successfully");
+            });
+
+            connection.query(alertQuery, [valve_sn], function (error, results) {
+                if (error) console.log(error);
+                else {
+                    console.log("Total new results after insert are: ", results);
+                    for (var i in results) {
+                        var alert_type = results[i].alert_type;
+                        if (alert_type === pressureFault) {
+                            currentPressureFaultCount = currentPressureFaultCount + 1;
+                        } else if (alert_type === leakFault) {
+                            currentLeakFaultCount = currentLeakFaultCount + 1;
+                        } else if (alert_type === cycleCountFault) {
+                            currentCycleCountFaultCount = currentCycleCountFaultCount + 1;
+                        }
+                    }
+                }
+                console.log("Current pressure fault count: ", currentPressureFaultCount);
+                console.log("Current leak fault count: ", currentLeakFaultCount);
+                console.log("Current cycle count fault count: ", currentCycleCountFaultCount);
+            });
+
+            if (currentPressureFaultCount > previousPressureFaultCount || currentLeakFaultCount > previousLeakFaultCount || currentCycleCountFaultCount > previousCycleCountFaultCount) {
+                sendEmailRequest(station.valve_sn);
+            }
+        }
     }
 
     connection.end();
 }
 //[END createEntity]
+
+function sendEmailRequest(valveSN) {
+    console.log("Send email request for valveSN", valveSN);
+
+    const baseUrl = 'https://' + projectid + '.appspot.com';
+    const emailUri = '/notification/';
+    const method = 'POST';
+
+    console.log("The baseURL is: " + baseUrl);
+
+    var emailRequest = {
+        method: method,
+        uri: baseUrl + emailUri + valveSN
+    };
+
+    request(emailRequest).then(response => {
+        console.log("The email response is: ", response);
+    });
+}
 
 /*
 

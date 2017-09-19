@@ -1,12 +1,12 @@
 {
-  "name": "nodejs-docs-samples-functions-datastore",
+  "name": "elasticsearch-nodejs-config-function",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Object Computing, Inc",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    "url": "https://github.com/SmartDevice_Demo.git"
   },
   "engines": {
     "node": ">=4.3.2"
@@ -17,10 +17,8 @@
     "test": "ava -T 20s --verbose test/*.test.js"
   },
   "dependencies": {
-    "mysql": "^2.13.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1"
-
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.15",
