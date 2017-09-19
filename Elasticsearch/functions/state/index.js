@@ -47,13 +47,13 @@ function createMessage(jsonData) {
     const elasticSearchMethod = 'POST';
     console.log("State: Entered createMessage...");
     var manifold_sn = jsonData.manifold_sn;
-    var timestamp = new Date(jsonData.timestamp);
+    var timestamp = new Date();
     console.log("Timestamp ", timestamp);
 
     console.log("station_count:" + jsonData.stations.length);
 
     var station_index;
-    for (station_index in jsonData.stations) {
+    for(station_index in jsonData.stations) {
         station = jsonData.stations[station_index];
         const station_num = station.station_num;
         const valve_sn = station.valve_sn;
@@ -91,7 +91,7 @@ function createMessage(jsonData) {
 
         console.log("The elasticSearchRequest is ", elasticSearchRequest);
 
-        return request(elasticSearchRequest).then(response => {
+        request(elasticSearchRequest).then(response => {
             console.log("Elasticsearch response", response);
         });
 
@@ -101,6 +101,6 @@ function createMessage(jsonData) {
 
 /*
 
- gcloud beta functions deploy elasticsearch-manifold-state-subscriber2 --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
+ gcloud beta functions deploy elasticsearch-manifold-state-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-state
 
  */

@@ -46,21 +46,22 @@ function createMessage (jsonData) {
     const configUri = '/valve_config/valve';
     const elasticSearchMethod = 'POST';
 
-    for(var i = 0; i < jsonData.stations.length; i++) {
+    var station_index;
+    for(station_index in jsonData.stations) {
         console.log("Config: iteration-" + i);
 
-        var station = jsonData.stations[i];
+        var station = jsonData.stations[station_index];
 
         var entity = {
             manifold_sn: jsonData.manifold_sn,
-            timestamp: new Date(jsonData.timestamp),
+            timestamp: new Date(),
             fab_date: new Date(station.fab_date),
             ship_date: new Date(station.ship_date),
             sku: station.sku,
             station_num: station.station_num,
             valve_sn: station.valve_sn,
             cycle_count_limit: station.ccl,
-            event_ts: new Date(jsonData.timestamp)
+            event_ts: new Date()
         };
 
         var elasticSearchRequest = {
@@ -76,7 +77,7 @@ function createMessage (jsonData) {
 
         console.log("The elasticSearchRequest is ", elasticSearchRequest);
 
-        return request(elasticSearchRequest).then(response => {
+        request(elasticSearchRequest).then(response => {
             console.log("Elasticsearch response", response);
         });
     }
@@ -84,6 +85,6 @@ function createMessage (jsonData) {
 //[END createMessage]
 
 /*
-  gcloud beta functions deploy elasticsearch-manifold-configuration-subscriber2 --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
+  gcloud beta functions deploy elasticsearch-manifold-configuration-subscriber --entry-point subscribe --stage-bucket nexmatix-staging-bucket --trigger-topic manifold-configuration
 
 */
