@@ -51,7 +51,8 @@ function createEntity(jsonData){
     const cycleCountFault = "cycle count";
     const leakFault = "leak";
 
-    const alertQuery = "SELECT alert_type FROM valve_alert WHERE valve_sn = ?";
+    const alertQuery = "SELECT count(*) as count FROM valve_alert WHERE valve_sn = ? and needs_notification = true";
+    const updateAlertQuery = "UPDATE valve_alert SET needs_notification = false WHERE valve_sn = ? and needs_notification = true";
 
     console.log("stations_count:"+jsonData.stations.length);
 
@@ -67,14 +68,6 @@ function createEntity(jsonData){
     for(station_index in jsonData.stations){
         console.log("The station index is: ", station_index);
 
-        var previousPressureFaultCount = 0;
-        var previousCycleCountFaultCount = 0;
-        var previousLeakFaultCount = 0;
-
-        var currentPressureFaultCount = 0;
-        var currentCycleCountFaultCount = 0;
-        var currentLeakFaultCount = 0;
-
         station = jsonData.stations[station_index];
         const station_num = station.station_num;
         const valve_sn = station.valve_sn;
@@ -86,27 +79,6 @@ function createEntity(jsonData){
             console.log("State: station-" + JSON.stringify(station));
             console.log("State: station_num-" + station_num);
             console.log("State: valve_sn-" + valve_sn);
-
-            connection.query(alertQuery, [valve_sn], function (error, results) {
-                if (error) console.log(error);
-                else {
-                    console.log("Total results are: ", results);
-                    for (var i in results) {
-                        var alert_type = results[i].alert_type;
-                        console.log("The alert_type is: " + alert_type);
-                        if (alert_type === pressureFault) {
-                            previousPressureFaultCount = previousPressureFaultCount + 1;
-                        } else if (alert_type === leakFault) {
-                            previousLeakFaultCount = previousLeakFaultCount + 1;
-                        } else if (alert_type === cycleCountFault) {
-                            previousCycleCountFaultCount = previousCycleCountFaultCount + 1;
-                        }
-                    }
-                }
-                console.log("Previous pressure fault count: ", previousPressureFaultCount);
-                console.log("Previous leak fault count: ", previousLeakFaultCount);
-                console.log("Previous cycle count fault count: ", previousCycleCountFaultCount);
-            });
 
             var entity = {
                 valve_sn: station.valve_sn,
@@ -127,29 +99,30 @@ function createEntity(jsonData){
                 else console.log("inserted successfully");
             });
 
+            var count = 0;
+
             connection.query(alertQuery, [valve_sn], function (error, results) {
                 if (error) console.log(error);
                 else {
                     console.log("Total new results after insert are: ", results);
                     for (var i in results) {
-                        var alert_type = results[i].alert_type;
-                        if (alert_type === pressureFault) {
-                            currentPressureFaultCount = currentPressureFaultCount + 1;
-                        } else if (alert_type === leakFault) {
-                            currentLeakFaultCount = currentLeakFaultCount + 1;
-                        } else if (alert_type === cycleCountFault) {
-                            currentCycleCountFaultCount = currentCycleCountFaultCount + 1;
+                        count = results[i].count;
+                        if(count > 0) {
+                            console.log("The count is greater than 0, sending email.");
+                            sendEmailRequest(valve_sn);
                         }
                     }
                 }
-                console.log("Current pressure fault count: ", currentPressureFaultCount);
-                console.log("Current leak fault count: ", currentLeakFaultCount);
-                console.log("Current cycle count fault count: ", currentCycleCountFaultCount);
             });
 
-            if (currentPressureFaultCount > previousPressureFaultCount || currentLeakFaultCount > previousLeakFaultCount || currentCycleCountFaultCount > previousCycleCountFaultCount) {
-                sendEmailRequest(station.valve_sn);
-            }
+            console.log("Count is: ", count);
+
+            connection.query(updateAlertQuery, [valve_sn], function (error, results) {
+                    if (error) console.log(error);
+                    else {
+                        console.log("Updated valve_alerts to not need notification for valve: ", valve_sn);
+                    }
+            });
         }
     }
 
