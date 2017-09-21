@@ -44,3 +44,5 @@ BEGIN
 END //
 
 DELIMITER ;
+
+UPDATE valve_status SET p_fault = 'H' WHERE
