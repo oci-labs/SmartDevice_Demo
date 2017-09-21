@@ -35,5 +35,6 @@ CREATE TABLE `valve_alert` (
   `valve_sn` int(11) NOT NULL,
   `manifold_sn` int(11) DEFAULT NULL,
   `station_num` int(11) DEFAULT NULL,
+  'needs_notification' boolean DEFAULT TRUE,
   PRIMARY KEY (`valve_sn`,`alert_type`)
 );
