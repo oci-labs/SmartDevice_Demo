@@ -71,7 +71,7 @@ function createEntity(jsonData){
         station = jsonData.stations[station_index];
         const station_num = station.station_num;
         const valve_sn = station.valve_sn;
-        if(valve_sn !== null && valve_sn !== undefined) {
+        if(valve_sn !== null && valve_sn !== undefined && valve_sn !== 0) {
 
             const default_ccl = 20000000;
 
@@ -96,7 +96,7 @@ function createEntity(jsonData){
 
             connection.query('INSERT INTO valve_status SET ? on duplicate key update ?', [entity, entity], function (error, results, fields) {
                 if (error) console.log(error);
-                else console.log("inserted successfully");
+                else console.log("inserted entity successfully", entity);
             });
 
             var count = 0;
@@ -114,8 +114,6 @@ function createEntity(jsonData){
                     }
                 }
             });
-
-            console.log("Count is: ", count);
 
             connection.query(updateAlertQuery, [valve_sn], function (error, results) {
                     if (error) console.log(error);

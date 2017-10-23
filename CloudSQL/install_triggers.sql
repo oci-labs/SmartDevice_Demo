@@ -12,7 +12,7 @@ BEGIN
   END IF;
 
   IF new.p_fault != 'N' THEN
-    INSERT INTO valve_alert (valve_sn, manifold_sn, station_num, detection_time, alert_type, needs_notification) VALUES (new.valve_sn, new.manifold_sn, new.station_num, new.timestamp, 'pressure', true);
+    INSERT INTO valve_alert (valve_sn, manifold_sn, station_num, detection_time, alert_type, needs_notification) VALUES (new.valve_sn, new.manifold_sn, new.station_num, new.timestamp, 'pressure fault', true);
   END IF;
 
   IF new.leak != 'N' THEN
@@ -30,9 +30,9 @@ BEGIN
   END IF;
 
   IF old.p_fault = 'N' AND new.p_fault != 'N' THEN
-    INSERT INTO valve_alert (valve_sn, manifold_sn, station_num, detection_time, alert_type, needs_notification) VALUES (new.valve_sn, new.manifold_sn, new.station_num, new.timestamp, 'pressure', true);
+    INSERT INTO valve_alert (valve_sn, manifold_sn, station_num, detection_time, alert_type, needs_notification) VALUES (new.valve_sn, new.manifold_sn, new.station_num, new.timestamp, 'pressure fault', true);
   ELSEIF old.p_fault != 'N' AND new.p_fault = 'N' THEN
-    DELETE FROM valve_alert where valve_sn=new.valve_sn and alert_type='pressure';
+    DELETE FROM valve_alert where valve_sn=new.valve_sn and alert_type='pressure fault';
   END IF;
 
   IF old.leak = 'N' AND new.leak != 'N' THEN

@@ -49,27 +49,32 @@ function createEntity (jsonData) {
 
     connection.connect();
 
-    for(var i = 0; i < jsonData.stations.length; i++){
+    for(var i = 0; i < jsonData.stations.length; i++) {
 
-        console.log("Config: iteration-"+i);
+        console.log("Config: iteration-" + i);
 
-	var station = jsonData.stations[i];
+        var station = jsonData.stations[i];
 
-	var entity = {
-    manifold_sn: jsonData.manifold_sn,
-    timestamp: new Date(jsonData.timestamp),
-    fab_date: new Date(station.fab_date),
-	  ship_date: new Date(station.ship_date),
-	  sku: station.sku,
-	  station_num: station.station_num,
-    valve_sn: station.valve_sn,
-    ccl: station.ccl
-	};
+        var entity = {
+            manifold_sn: jsonData.manifold_sn,
+            timestamp: new Date(jsonData.timestamp),
+            fab_date: new Date(station.fab_date),
+            ship_date: new Date(station.ship_date),
+            sku: station.sku,
+            station_num: station.station_num,
+            valve_sn: station.valve_sn,
+            ccl: station.ccl
+        };
 
-        connection.query('INSERT INTO valve SET ? on duplicate key update ?', [entity, entity], function(error, results, fields) {
-            if (error) console.log(error);
-            else console.log("inserted successfully");
-        });
+        console.log("Created valve config entity: ", entity);
+
+        if (entity.valve_sn !== null && entity.valve_sn !== undefined && entity.valve_sn !== 0)
+        {
+               connection.query('INSERT INTO valve SET ? on duplicate key update ?', [entity, entity], function (error, results, fields) {
+                if (error) console.log(error);
+                else console.log("inserted successfully");
+            });
+        }
     }
 
     connection.end();
